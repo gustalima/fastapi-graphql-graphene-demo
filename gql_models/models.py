@@ -1,10 +1,9 @@
 # # flask_sqlalchemy/models.py
 from sqlalchemy import *
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import backref, relationship, scoped_session, sessionmaker
+from sqlalchemy.orm import backref, relationship
 
-from gql.database import Base
+from gql_models.database import Base
 
 
 class Department(Base):

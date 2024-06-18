@@ -4,7 +4,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 DATABASE_URI = "sqlite:///database.sqlite3"
 
-engine = create_engine(DATABASE_URI, convert_unicode=True)
+engine = create_engine(DATABASE_URI)
 Base = declarative_base()
 Base.metadata.create_all(bind=engine)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))

@@ -1,24 +1,38 @@
-# flask_sqlalchemy/app.py
-from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
-from starlette_graphene3 import GraphQLApp, make_graphiql_handler
+"""
+Flask app
+"""
 
-from gql.schema import schema
+from gql_models.schema import my_schema
 
-app = FastAPI()
+import logging
+import sys
+from flask import Flask
+from flask_cors import CORS
+from graphql_server.flask import GraphQLView
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+
+logging.basicConfig(
+    stream=sys.stderr,
+    format="[%(asctime)s %(name)s:%(levelname)s] %(message)s",
+    datefmt="%y/%b/%d %H:%M:%S",
+    level=logging.DEBUG,
 )
 
+logger = logging.getLogger(name=__name__)
+app = Flask(__name__)
+CORS(app)
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+
+@app.route("/")
+def index():
+    return "Hello from my graphql server"
 
 
-app.mount("/graphql", GraphQLApp(schema=schema, on_get=make_graphiql_handler()))
+app.add_url_rule(
+    "/graphql",
+    view_func=GraphQLView.as_view(
+        "graphql",
+        schema=my_schema,
+        graphiql=True,
+    ),
+)

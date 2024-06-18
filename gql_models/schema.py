@@ -2,14 +2,15 @@ import base64
 import os
 
 import graphene
-from fastapi import Depends
-from graphene import ID, Field, Int, ObjectType, String, relay
+
+# from fastapi import Depends
+from graphene import ID, String, relay
 from graphene_sqlalchemy import SQLAlchemyConnectionField, SQLAlchemyObjectType
 
-from gql.database import get_db
-from gql.models import Department as DepartmentModel
-from gql.models import Employee as EmployeeModel
-from gql.models import Todo as TodoModel
+from gql_models.database import get_db
+from gql_models.models import Department as DepartmentModel
+from gql_models.models import Employee as EmployeeModel
+from gql_models.models import Todo as TodoModel
 
 
 class FileItemType(graphene.ObjectType):
@@ -71,7 +72,7 @@ class Query(graphene.ObjectType):
             return [FileItemType(name=str(e), is_directory=False, full_path="", depth=0)]
 
 
-class CreateTodo(graphene.Mutation, Session=Depends(get_db)):
+class CreateTodo(graphene.Mutation):
     todo = graphene.Field(lambda: Todo)
 
     class Arguments:
@@ -88,7 +89,7 @@ class CreateTodo(graphene.Mutation, Session=Depends(get_db)):
         return CreateTodo(todo=todo)
 
 
-class UpdateTodo(graphene.Mutation, Session=Depends(get_db)):
+class UpdateTodo(graphene.Mutation):
     todo = graphene.Field(lambda: Todo)
 
     class Arguments:
@@ -110,7 +111,7 @@ class UpdateTodo(graphene.Mutation, Session=Depends(get_db)):
         return UpdateTodo(todo=todo)
 
 
-class DeleteTodo(graphene.Mutation, Session=Depends(get_db)):
+class DeleteTodo(graphene.Mutation):
     success = graphene.Field(lambda: String)
 
     class Arguments:
@@ -135,7 +136,7 @@ class Mutation(graphene.ObjectType):
 
 
 # schema = graphene.Schema(query=Query, mutation=[CreateTodo, UpdateTodo, DeleteTodo])
-schema = graphene.Schema(query=Query, mutation=Mutation)
+my_schema = graphene.Schema(query=Query, mutation=Mutation)
 
 
 def atob_id(encoded_string):
